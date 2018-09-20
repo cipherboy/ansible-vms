@@ -24,6 +24,18 @@
     shell: /bin/bash
     generate_ssh_key: yes
 
+- name: Set up jss git name
+  command: git config --global user.name jss
+  become: yes
+  become_user: jss
+
+- name: Set up jss git email
+  command: git config --global user.email jss@github.com
+  args:
+
+  become: yes
+  become_user: jss
+
 - name: Remove sandbox directory
   file:
     path: /home/jss/sandbox
@@ -94,7 +106,7 @@
   become_user: jss
 
 - name: Clean, build, and test jss on master (first)
-  shell: make clean all test_jss >/home/jss/jss_first_build.stdout 2>/home/jss/jss_first_build.stderr
+  shell: make clean all test_jss 2>&1 >/home/jss/jss_first_build.out
   args:
     chdir: /home/jss/sandbox/jss
   become: yes
@@ -104,7 +116,7 @@
     - USE_64: 1
 
 - name: Clean, build, and test jss on master (real)
-  shell: make clean all test_jss >/home/jss/jss_master_build.stdout 2>/home/jss/jss_master_build.stderr
+  shell: make clean all test_jss 2>&1 >/home/jss/jss_master_build.out
   args:
     chdir: /home/jss/sandbox/jss
   become: yes
@@ -122,7 +134,7 @@
 
 
 - name: Clean, build, and test jss on branch
-  shell: make clean all test_jss >/home/jss/jss_branch_build.stdout 2>/home/jss/jss_branch_build.stderr
+  shell: make clean all test_jss 2>&1 >/home/jss/jss_branch_build.out
   args:
     chdir: /home/jss/sandbox/jss
   become: yes
