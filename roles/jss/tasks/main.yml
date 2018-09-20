@@ -1,0 +1,132 @@
+---
+# This playbook installs JSS from the specified location
+
+- name: Install JSS dependencies
+  dnf:
+    name: "{{ packages }}"
+    state: installed
+  vars:
+    packages:
+     - apache-commons-lang
+     - apache-commons-codec
+     - gcc-c++
+     - git
+     - make
+     - mercurial
+     - java-devel
+     - jpackage-utils
+     - slf4j
+     - zlib-devel
+
+- name: Create jss user
+  user:
+    name: jss
+    shell: /bin/bash
+    generate_ssh_key: yes
+
+- name: Remove sandbox directory
+  file:
+    path: /home/jss/sandbox
+    state: absent
+    force: yes
+
+- name: Create sandbox directory
+  file:
+    path: /home/jss/sandbox
+    state: directory
+    owner: jss
+    group: jss
+
+- name: Clone nspr repository
+  hg:
+    repo: https://hg.mozilla.org/projects/nspr
+    clone: yes
+    update: yes
+    dest: /home/jss/sandbox/nspr
+  become: yes
+  become_user: jss
+
+- name: Clone nss repository
+  hg:
+    repo: https://hg.mozilla.org/projects/nss
+    clone: yes
+    update: yes
+    dest: /home/jss/sandbox/nss
+  become: yes
+  become_user: jss
+
+- name: Clone jss repository
+  git:
+    repo: "{{ jss.origin.url }}"
+    clone: yes
+    update: yes
+    dest: /home/jss/sandbox/jss
+    version: "{{ jss.origin.branch }}"
+  become: yes
+  become_user: jss
+
+- name: Add jss upstream
+  command: "git remote add upstream {{ jss.upstream.url }}"
+  args:
+    chdir: /home/jss/sandbox/jss
+  become: yes
+  become_user: jss
+
+- name: Update from upstream
+  command: git fetch upstream
+  args:
+    chdir: /home/jss/sandbox/jss
+  become: yes
+  become_user: jss
+
+- name: Rebase against upstream
+  command: "git rebase upstream/{{ jss.upstream.branch }}"
+  args:
+    chdir: /home/jss/sandbox/jss
+  become: yes
+  become_user: jss
+
+- name: Checkout upstream master
+  command: "git checkout upstream/master"
+  args:
+    chdir: /home/jss/sandbox/jss
+  become: yes
+  become_user: jss
+
+- name: Clean, build, and test jss on master (first)
+  shell: make clean all test_jss >/home/jss/jss_first_build.stdout 2>/home/jss/jss_first_build.stderr
+  args:
+    chdir: /home/jss/sandbox/jss
+  become: yes
+  become_user: jss
+  environment:
+    - JAVA_HOME: /etc/alternatives/java_sdk_openjdk
+    - USE_64: 1
+
+- name: Clean, build, and test jss on master (real)
+  shell: make clean all test_jss >/home/jss/jss_master_build.stdout 2>/home/jss/jss_master_build.stderr
+  args:
+    chdir: /home/jss/sandbox/jss
+  become: yes
+  become_user: jss
+  environment:
+    - JAVA_HOME: /etc/alternatives/java_sdk_openjdk
+    - USE_64: 1
+
+- name: Checkout branch
+  command: "git checkout {{ jss.origin.branch }}"
+  args:
+    chdir: /home/jss/sandbox/jss
+  become: yes
+  become_user: jss
+
+
+- name: Clean, build, and test jss on branch
+  shell: make clean all test_jss >/home/jss/jss_branch_build.stdout 2>/home/jss/jss_branch_build.stderr
+  args:
+    chdir: /home/jss/sandbox/jss
+  become: yes
+  become_user: jss
+  environment:
+    - JAVA_HOME: /etc/alternatives/java_sdk_openjdk
+    - USE_64: 1

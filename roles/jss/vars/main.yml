@@ -1,0 +1,7 @@
+jss:
+  origin:
+    url: https://github.com/cipherboy/jss
+    branch: build-java-improvements
+  upstream:
+    url: https://github.com/dogtagpki/jss
+    branch: master

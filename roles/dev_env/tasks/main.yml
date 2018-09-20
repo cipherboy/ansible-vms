@@ -1,0 +1,15 @@
+---
+# Creates a development environment
+
+- name: Install useful packages
+  dnf:
+    name: "{{ packages }}"
+    state: installed
+  vars:
+    packages:
+     - ccache
+     - gdb
+     - make
+     - screen
+     - tmux
+     - vim-enhanced
