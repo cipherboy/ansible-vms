@@ -1,5 +1,7 @@
 ---
-# This playbook installs JSS from the specified location
+# This playbook builds JSS from the specified git repository
+# 
+# To define which git repository, see the vars in roles/jss/vars/main.yml
 
 - name: Install JSS dependencies
   dnf:
@@ -13,9 +15,13 @@
      - git
      - make
      - mercurial
+     - nspr-devel
+     - nss-devel
      - java-devel
      - jpackage-utils
+     - rpm-build
      - slf4j
+     - slf4j-jdk14
      - zlib-devel
 
 - name: Create jss user
@@ -37,6 +43,12 @@
 - name: Remove sandbox directory
   file:
     path: /home/jss/sandbox
+    state: absent
+    force: yes
+
+- name: Remove build directory
+  file:
+    path: /home/jss/build
     state: absent
     force: yes
 
@@ -102,6 +114,7 @@
     chdir: /home/jss/sandbox/jss
   become: yes
   become_user: jss
+  when: not jss.build_rpm
 
 - name: Clean, build, and test jss on master (first)
   shell: make clean all test_jss >/home/jss/jss_first_build.out 2>&1
@@ -112,6 +125,7 @@
   environment:
     - JAVA_HOME: /etc/alternatives/java_sdk_openjdk
     - USE_64: 1
+  when: not jss.build_rpm
 
 - name: Clean, build, and test jss on master (real)
   shell: make clean all test_jss >/home/jss/jss_master_build.out 2>&1
@@ -122,6 +136,7 @@
   environment:
     - JAVA_HOME: /etc/alternatives/java_sdk_openjdk
     - USE_64: 1
+  when: not jss.build_rpm
 
 - name: Checkout branch
   command: "git checkout {{ jss.origin.branch }}"
@@ -129,6 +144,7 @@
     chdir: /home/jss/sandbox/jss
   become: yes
   become_user: jss
+  when: not jss.build_rpm
 
 
 - name: Clean, build, and test jss on branch
@@ -140,3 +156,15 @@
   environment:
     - JAVA_HOME: /etc/alternatives/java_sdk_openjdk
     - USE_64: 1
+  when: not jss.build_rpm
+
+- name: Build RPM
+  shell: ./build.sh
+  args:
+    chdir: /home/jss/sandbox/jss
+  become: yes
+  become_user: jss
+  environment:
+    - JAVA_HOME: /etc/alternatives/java_sdk_openjdk
+    - USE_64: 1
+  when: jss.build_rpm

@@ -5,3 +5,4 @@ jss:
   upstream:
     url: https://github.com/dogtagpki/jss
     branch: master
+  build_rpm: false

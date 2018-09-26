@@ -1,7 +1,7 @@
 ---
-# This playbook provisions a node with JSS installed
+# This playbook provisions a node to build JSS
 
-- name: Load JSS role
+- name: Load all roles to build JSS
   hosts: all
   remote_user: root
   roles:
