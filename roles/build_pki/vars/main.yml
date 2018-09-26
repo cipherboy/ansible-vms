@@ -1,0 +1,8 @@
+pki:
+  origin:
+    url: https://github.com/cipherboy/pki
+    branch: master
+  upstream:
+    url: https://github.com/dogtagpki/pki
+    branch: master
+  build_rpm: true
