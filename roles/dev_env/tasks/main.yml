@@ -8,8 +8,11 @@
   vars:
     packages:
      - ccache
+     - cmake
      - gdb
+     - git
      - make
+     - rpm-build
      - screen
      - tmux
      - vim-enhanced

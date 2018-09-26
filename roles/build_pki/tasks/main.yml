@@ -1,0 +1,85 @@
+---
+# This playbook builds JSS from the specified git repository
+# 
+# To define which git repository, see the vars in roles/build_pki/vars/main.yml
+
+- name: Install PKI dependencies
+  command: dnf build-dep "pki-*" dogtag-pki -y
+
+- name: Create pki user
+  user:
+    name: pki
+    shell: /bin/bash
+    generate_ssh_key: yes
+
+- name: Set up pki git name
+  command: git config --global user.name pki
+  args:
+    chdir: /home/pki
+  become: yes
+  become_user: pki
+
+- name: Set up pki git email
+  command: git config --global user.email pki@github.com
+  args:
+    chdir: /home/pki
+  become: yes
+  become_user: pki
+
+- name: Remove sandbox directory
+  file:
+    path: /home/pki/sandbox
+    state: absent
+    force: yes
+
+- name: Remove build directory
+  file:
+    path: /home/pki/build
+    state: absent
+    force: yes
+
+- name: Create sandbox directory
+  file:
+    path: /home/pki/sandbox
+    state: directory
+    owner: pki
+    group: pki
+
+- name: Clone pki repository
+  git:
+    repo: "{{ pki.origin.url }}"
+    clone: yes
+    update: yes
+    dest: /home/pki/sandbox/pki
+    version: "{{ pki.origin.branch }}"
+  become: yes
+  become_user: pki
+
+- name: Add pki upstream
+  command: "git remote add upstream {{ pki.upstream.url }}"
+  args:
+    chdir: /home/pki/sandbox/pki
+  become: yes
+  become_user: pki
+
+- name: Update from upstream
+  command: git fetch upstream
+  args:
+    chdir: /home/pki/sandbox/pki
+  become: yes
+  become_user: pki
+
+- name: Rebase against upstream
+  command: "git rebase upstream/{{ pki.upstream.branch }}"
+  args:
+    chdir: /home/pki/sandbox/pki
+  become: yes
+  become_user: pki
+
+- name: Build RPM
+  shell: ./build.sh
+  args:
+    chdir: /home/pki/sandbox/pki
+  become: yes
+  become_user: pki
+  when: pki.build_rpm
