@@ -1,0 +1,5 @@
+---
+# This playbook installs JSS from a built image.
+
+- name: Install JSS packages from build
+  shell: dnf install /home/jss/build/jss/RPMS/*.rpm -y
