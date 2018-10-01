@@ -12,6 +12,7 @@
      - gdb
      - git
      - make
+     - nmap
      - rpm-build
      - screen
      - tmux
