@@ -1,5 +1,10 @@
 ---
 # This playbook installs dogtag from a built image.
 
-- name: Install PKI packages from build
+- name: Install PKI packages from 10.5 build
+  shell: dnf install /home/pki/sandbox/RPMS/*/*.rpm -y
+  when: pki.version == "10.5"
+
+- name: Install PKI packages from 10.6 build
   shell: dnf install /home/pki/build/pki/RPMS/*.rpm -y
+  when: pki.version == "10.6"
