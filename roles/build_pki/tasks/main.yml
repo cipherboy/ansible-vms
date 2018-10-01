@@ -76,10 +76,18 @@
   become: yes
   become_user: pki
 
-- name: Build RPM
-  shell: ./build.sh
+- name: Build RPM for 10.5
+  shell: ./scripts/compose_pki_core_packages rpms
   args:
     chdir: /home/pki/sandbox/pki
   become: yes
   become_user: pki
-  when: pki.build_rpm
+  when: pki.build.rpm and pki.build.version == "10.5"
+
+- name: Build RPM for 10.6
+  shell: build.sh
+  args:
+    chdir: /home/pki/sandbox/pki
+  become: yes
+  become_user: pki
+  when: pki.build.rpm and pki.build.version == "10.6"

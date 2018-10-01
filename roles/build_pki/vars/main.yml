@@ -1,8 +1,10 @@
 pki:
   origin:
-    url: https://github.com/cipherboy/pki
-    branch: master
+    url: https://github.com/SilleBille/pki
+    branch: bz-1617894
   upstream:
     url: https://github.com/dogtagpki/pki
-    branch: master
-  build_rpm: true
+    branch: DOGTAG_10_5_BRANCH
+  build:
+    rpm: true
+    version: "10.5"
