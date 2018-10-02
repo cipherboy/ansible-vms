@@ -4,4 +4,4 @@ jss:
 
 pki:
   hosts:
-    192.168.122.138
+    master.example.com

@@ -1,0 +1,13 @@
+---
+# This role configures the installation of a dogtag PKI master
+
+- name: Copy CA configuration
+  copy:
+    src: ca.cfg
+    dest: /root/ca.cfg
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Spawn CA
+  shell: pkispawn -f /root/ca.cfg -s CA

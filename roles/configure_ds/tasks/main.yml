@@ -39,5 +39,3 @@
       dc: pki
       EOF
   when: check_dscreate.stat.exists
-
-- name: Create DS Instance
