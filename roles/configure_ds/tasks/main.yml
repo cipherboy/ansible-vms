@@ -1,0 +1,43 @@
+---
+# This role configures the installation of a dogtag PKI master
+
+- name: Install 389DS
+  dnf:
+    name: "{{ packages }}"
+    state: installed
+  vars:
+    packages:
+     - 389-ds-base
+
+- name: Check existence of dscreate
+  stat:
+    path: /usr/sbin/dscreate
+  register: check_dscreate
+
+- name: Create DS Instance Template
+  command: dscreate create-template /tmp/ds.tmp
+  when: check_dscreate.stat.exists
+
+- name: Modify DS Instance Template
+  shell: sed -e 's/;root_password = .*/root_password = Secret.123/g' -e 's/;suffix = .*/suffix = dc=example,dc=com/g' /tmp/ds.tmp > /tmp/ds.inf
+  when: check_dscreate.stat.exists
+
+- name: Create DS Instance
+  command: dscreate fromfile /tmp/ds.inf
+  when: check_dscreate.stat.exists
+
+- name: Create Base Entries
+  shell:
+    cmd: |
+      ldapadd -h $HOSTNAME -x -D "cn=Directory Manager" -w Secret.123 << EOF
+      dn: dc=example,dc=com
+      objectClass: domain
+      dc: example
+
+      dn: dc=pki,dc=example,dc=com
+      objectClass: domain
+      dc: pki
+      EOF
+  when: check_dscreate.stat.exists
+
+- name: Create DS Instance

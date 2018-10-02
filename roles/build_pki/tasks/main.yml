@@ -85,7 +85,7 @@
   when: pki.build.rpm and pki.build.version == "10.5"
 
 - name: Build RPM for 10.6
-  shell: build.sh
+  shell: bash build.sh
   args:
     chdir: /home/pki/sandbox/pki
   become: yes

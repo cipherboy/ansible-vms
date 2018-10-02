@@ -1,10 +1,10 @@
 pki:
   origin:
-    url: https://github.com/SilleBille/pki
-    branch: bz-1617894
+    url: https://github.com/frasertweedale/pki
+    branch: fix/3055-number-range-depletion
   upstream:
     url: https://github.com/dogtagpki/pki
-    branch: DOGTAG_10_5_BRANCH
+    branch: master
   build:
     rpm: true
-    version: "10.5"
+    version: "10.6"
