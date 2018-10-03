@@ -11,9 +11,19 @@
      - cmake
      - gdb
      - git
+     - libselinux-python
      - make
      - nmap
      - rpm-build
      - screen
      - tmux
      - vim-enhanced
+
+- name: Disable firewalld
+  systemd:
+    name: firewalld
+    state: stopped
+    enabled: no
+
+- name: Flush iptables
+  shell: iptables -F
