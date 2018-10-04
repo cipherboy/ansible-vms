@@ -1,0 +1,85 @@
+---
+# This playbook builds JSS from the specified git repository
+# 
+# To define which git repository, see the vars in roles/build_tomcatjss/vars/main.yml
+
+- name: Install PKI dependencies
+  command: dnf build-dep "tomcatjss" -y
+
+- name: Create tomcatjss user
+  user:
+    name: tomcatjss
+    shell: /bin/bash
+    generate_ssh_key: yes
+
+- name: Set up tomcatjss git name
+  command: git config --global user.name tomcatjss
+  args:
+    chdir: /home/tomcatjss
+  become: yes
+  become_user: tomcatjss
+
+- name: Set up tomcatjss git email
+  command: git config --global user.email tomcatjss@github.com
+  args:
+    chdir: /home/tomcatjss
+  become: yes
+  become_user: tomcatjss
+
+- name: Remove sandbox directory
+  file:
+    path: /home/tomcatjss/sandbox
+    state: absent
+    force: yes
+
+- name: Remove build directory
+  file:
+    path: /home/tomcatjss/build
+    state: absent
+    force: yes
+
+- name: Create sandbox directory
+  file:
+    path: /home/tomcatjss/sandbox
+    state: directory
+    owner: tomcatjss
+    group: tomcatjss
+
+- name: Clone tomcatjss repository
+  git:
+    repo: "{{ tomcatjss.origin.url }}"
+    clone: yes
+    update: yes
+    dest: /home/tomcatjss/sandbox/tomcatjss
+    version: "{{ tomcatjss.origin.branch }}"
+  become: yes
+  become_user: tomcatjss
+
+- name: Add tomcatjss upstream
+  command: "git remote add upstream {{ tomcatjss.upstream.url }}"
+  args:
+    chdir: /home/tomcatjss/sandbox/tomcatjss
+  become: yes
+  become_user: tomcatjss
+
+- name: Update from upstream
+  command: git fetch upstream
+  args:
+    chdir: /home/tomcatjss/sandbox/tomcatjss
+  become: yes
+  become_user: tomcatjss
+
+- name: Rebase against upstream
+  command: "git rebase upstream/{{ tomcatjss.upstream.branch }}"
+  args:
+    chdir: /home/tomcatjss/sandbox/tomcatjss
+  become: yes
+  become_user: tomcatjss
+
+- name: Build RPM for 10.6
+  shell: bash build.sh
+  args:
+    chdir: /home/tomcatjss/sandbox/tomcatjss
+  become: yes
+  become_user: tomcatjss
+  when: tomcatjss.build.rpm

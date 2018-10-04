@@ -1,0 +1,9 @@
+tomcatjss:
+  origin:
+    url: https://github.com/cipherboy/tomcatjss
+    branch: master
+  upstream:
+    url: https://github.com/dogtagpki/tomcatjss
+    branch: master
+  build:
+    rpm: true

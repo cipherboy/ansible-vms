@@ -1,0 +1,9 @@
+---
+# This playbook provisions a node to build Dogtag PKI
+
+- name: Load all roles
+  hosts: tomcatjss
+  remote_user: root
+  roles:
+    - dev_env
+    - build_tomcatjss
