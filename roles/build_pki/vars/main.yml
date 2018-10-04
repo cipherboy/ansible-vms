@@ -1,7 +1,7 @@
 pki:
   origin:
-    url: https://github.com/frasertweedale/pki
-    branch: fix/3055-number-range-depletion
+    url: https://github.com/cipherboy/pki
+    branch: master
   upstream:
     url: https://github.com/dogtagpki/pki
     branch: master

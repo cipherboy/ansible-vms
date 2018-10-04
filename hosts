@@ -1,7 +1,12 @@
 jss:
   hosts:
     192.168.122.228
-
 pki:
   hosts:
     clone-d.example.com
+tomcatjss:
+  hosts:
+    192.168.122.194
+integration:
+  hosts:
+    192.168.122.214
