@@ -1,6 +1,6 @@
 ---
 # This playbook builds JSS from the specified git repository
-# 
+#
 # To define which git repository, see the vars in roles/build_pki/vars/main.yml
 
 - name: Install PKI dependencies
@@ -75,6 +75,12 @@
     chdir: /home/pki/sandbox/pki
   become: yes
   become_user: pki
+
+- name: Install additional PKI dependencies
+  command: dnf build-dep --spec pki.spec -y
+  args:
+    chdir: /home/pki/sandbox/pki
+  when: pki.build.version == "10.6"
 
 - name: Build RPM for 10.5
   shell: ./scripts/compose_pki_core_packages rpms

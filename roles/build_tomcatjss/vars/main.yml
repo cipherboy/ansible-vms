@@ -1,6 +1,6 @@
 tomcatjss:
   origin:
-    url: https://github.com/cipherboy/tomcatjss
+    url: https://github.com/dogtagpki/tomcatjss
     branch: master
   upstream:
     url: https://github.com/dogtagpki/tomcatjss

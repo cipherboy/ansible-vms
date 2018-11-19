@@ -7,3 +7,6 @@
   roles:
     - dev_env
     - build_pki
+    - install_pki
+    - configure_ds
+    - configure_ca

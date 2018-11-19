@@ -1,6 +1,6 @@
 ---
 # This playbook builds JSS from the specified git repository
-# 
+#
 # To define which git repository, see the vars in roles/jss/vars/main.yml
 
 - name: Install JSS dependencies
@@ -115,6 +115,11 @@
   become: yes
   become_user: jss
   when: not jss.build.rpm
+
+- name: Install dependencies
+  command: "dnf builddep -y jss.spec"
+  args:
+    chdir: /home/jss/sandbox/jss
 
 - name: Clean, build, and test jss on master (first)
   shell: make clean all test_jss >/home/jss/jss_first_build.out 2>&1
