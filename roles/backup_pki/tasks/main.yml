@@ -1,0 +1,5 @@
+---
+# This playbook backs up the /etc/pki/pki-tomcat config.
+
+- name: Backup /etc/pki/pki-tomcat
+  command: tar -chf /tmp/etc-pki-pki-tomcat.tar /etc/pki/pki-tomcat
