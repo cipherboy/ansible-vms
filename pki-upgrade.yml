@@ -1,0 +1,29 @@
+---
+# This playbook provisions a node to test upgrading Dogtag
+
+- name: Load all roles
+  hosts: upgrade
+  remote_user: root
+  tasks:
+    - include_role:
+        name: dev_env
+    - include_role:
+        name: install_pki
+      vars:
+        pki:
+          version: "10.6"
+          source: "repo"
+    - include_role:
+        name: configure_ds
+    - include_role:
+        name: configure_ca
+    - include_role:
+        name: backup_pki
+    - include_role:
+        name: build_pki
+    - include_role:
+        name: install_pki
+      vars:
+        pki:
+          version: "10.6"
+          source: "build"
