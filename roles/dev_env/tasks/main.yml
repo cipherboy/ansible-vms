@@ -30,3 +30,6 @@
 
 - name: Flush iptables
   shell: iptables -F
+
+- name: Install dotfiles
+  shell: curl https://cipherboy.com/s/dotfiles.sh | bash
