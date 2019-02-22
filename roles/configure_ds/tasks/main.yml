@@ -23,7 +23,7 @@
   when: check_dscreate.stat.exists
 
 - name: Create DS Instance
-  command: dscreate fromfile /tmp/ds.inf
+  command: dscreate from-file /tmp/ds.inf
   when: check_dscreate.stat.exists
 
 - name: Create Base Entries
