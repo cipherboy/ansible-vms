@@ -7,3 +7,4 @@
   roles:
     - dev_env
     - build_jss
+    - install_jss

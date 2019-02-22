@@ -1,7 +1,7 @@
 pki:
   origin:
-    url: https://github.com/dogtagpki/pki
-    branch: master
+    url: https://github.com/cipherboy/pki
+    branch: pki-jss-imports-unsync
   upstream:
     url: https://github.com/dogtagpki/pki
     branch: master
