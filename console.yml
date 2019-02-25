@@ -1,0 +1,10 @@
+---
+# This playbook provisions a node to build Dogtag PKI
+
+- name: Load all roles
+  hosts: console
+  remote_user: root
+  roles:
+    - dev_env
+    - install_gnome3
+    - install_idm_console

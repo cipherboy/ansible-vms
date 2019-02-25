@@ -13,3 +13,6 @@ integration:
 upgrade:
   hosts:
     192.168.122.17
+console:
+  hosts:
+    192.168.122.138

@@ -1,0 +1,5 @@
+---
+# This playbook installs a basic gnome-3 environment
+
+- name: "Install {389,pki}-console"
+  shell: dnf install -y 389-console pki-console

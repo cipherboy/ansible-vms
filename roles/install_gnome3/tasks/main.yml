@@ -1,0 +1,11 @@
+---
+# This playbook installs a basic gnome-3 environment
+
+- name: Install basic GNOME-3 packages
+  shell: dnf install -y gdm gnome-terminal gedit gnome-shell gnome-session
+
+- name: Enable gdm
+  shell: systemctl enable gdm
+
+- name: Start gdm
+  shell: systemctl start gdm
