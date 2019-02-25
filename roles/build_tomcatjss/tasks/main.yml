@@ -1,6 +1,6 @@
 ---
 # This playbook builds JSS from the specified git repository
-# 
+#
 # To define which git repository, see the vars in roles/build_tomcatjss/vars/main.yml
 
 - name: Install PKI dependencies
