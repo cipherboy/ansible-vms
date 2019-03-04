@@ -3,8 +3,8 @@
 #
 # To define which git repository, see the vars in roles/build_tomcatjss/vars/main.yml
 
-- name: Install PKI dependencies
-  command: dnf build-dep "tomcatjss" -y
+# - name: Install Tomcatjss dependencies
+#   command: dnf build-dep "tomcatjss" -y
 
 - name: Create tomcatjss user
   user:
@@ -75,6 +75,9 @@
     chdir: /home/tomcatjss/sandbox/tomcatjss
   become: yes
   become_user: tomcatjss
+
+- name: Install Tomcatjss dependencies
+  command: dnf build-dep /home/tomcatjss/sandbox/tomcatjss/tomcatjss.spec -y
 
 - name: Build RPM for 10.6
   shell: bash build.sh

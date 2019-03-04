@@ -1,0 +1,6 @@
+---
+# This playbook enables FIPS on the target machine
+
+- name: Enable FIPS mode on RHEL 8
+  shell: fips-mode-setup --enable
+  when: method == "rhel-8"

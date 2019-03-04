@@ -10,13 +10,13 @@
     state: installed
   vars:
     packages:
-     - ccache
+     # - ccache
      - cmake
      - gdb
      - git
-     - libselinux-python
+     # - libselinux-python
      - make
-     - nmap
+     # - nmap
      - rpm-build
      - screen
      - tmux

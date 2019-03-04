@@ -3,8 +3,8 @@
 #
 # To define which git repository, see the vars in roles/build_pki/vars/main.yml
 
-- name: Install PKI dependencies
-  command: dnf build-dep "pki-*" dogtag-pki -y
+#- name: Install PKI dependencies
+#  command: dnf build-dep "pki-*" -y
 
 - name: Create pki user
   user:

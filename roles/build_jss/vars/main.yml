@@ -1,7 +1,7 @@
 jss:
   origin:
     url: https://github.com/cipherboy/jss
-    branch: pki-sync
+    branch: no-tests
   upstream:
     url: https://github.com/dogtagpki/jss
     branch: master

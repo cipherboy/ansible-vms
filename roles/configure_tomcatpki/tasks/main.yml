@@ -1,0 +1,31 @@
+---
+# This role configures the installation of a dogtag PKI master
+
+- name: Create Tomcat PKI server
+  shell: pki-server create tomcat@pki
+
+- name: Set up connector
+  shell: pki-server http-connector-add -i tomcat@pki Secure --port 8443 --scheme https --secure true --sslEnabled true --sslProtocol SSL --sslImpl org.dogtagpki.tomcat.JSSImplementation
+
+- name: Generate NSS Keystore
+  shell: pki-server nss-create -i tomcat@pki --password Secret.123
+
+- name: Setup password file
+  shell: echo "Secret.123" > /tmp/password.txt
+
+- name: Generate noise
+  shell: openssl rand -out /tmp/noise.bin 2048
+
+- name: Generate and sign certificate
+  shell: certutil -S -x -d /var/lib/tomcats/pki/alias -f /tmp/password.txt -z /tmp/noise.bin -n sslserver -s "CN=$HOSTNAME" -t "CT,C,C" -m $RANDOM -k rsa -g 2048 -Z SHA256 --keyUsage certSigning,keyEncipherment
+
+- name: Enable JSS
+  shell: pki-server jss-enable -i tomcat@pki
+
+- name: Enable NSS certificate
+  shell: pki-server http-connector-cert-add -i tomcat@pki --keyAlias sslserver --keystoreType pkcs11 --keystoreProvider Mozilla-JSS
+
+- name: Start PKI instance
+  systemd:
+    state: started
+    name: tomcat@pki
