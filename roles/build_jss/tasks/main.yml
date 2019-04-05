@@ -79,16 +79,16 @@
 
 - name: Clone jss repository
   git:
-    repo: "{{ jss.origin.url }}"
+    repo: "{{ origin_url }}"
     clone: yes
     update: yes
     dest: /home/jss/sandbox/jss
-    version: "{{ jss.origin.branch }}"
+    version: "{{ origin_branch }}"
   become: yes
   become_user: jss
 
 - name: Add jss upstream
-  command: "git remote add upstream {{ jss.upstream.url }}"
+  command: "git remote add upstream {{ upstream_url }}"
   args:
     chdir: /home/jss/sandbox/jss
   become: yes
@@ -102,7 +102,7 @@
   become_user: jss
 
 - name: Rebase against upstream
-  command: "git rebase upstream/{{ jss.upstream.branch }}"
+  command: "git rebase upstream/{{ upstream_branch }}"
   args:
     chdir: /home/jss/sandbox/jss
   become: yes
@@ -114,7 +114,7 @@
     chdir: /home/jss/sandbox/jss
   become: yes
   become_user: jss
-  when: not jss.build.rpm
+  when: not build_rpm
 
 - name: Install dependencies
   command: "dnf builddep -y jss.spec"
@@ -130,8 +130,7 @@
   environment:
     - JAVA_HOME: /etc/alternatives/java_sdk_openjdk
     - USE_64: 1
-    - CHECK_DEPRECATION: "{{ jss.build.check_deprecation }}"
-  when: not jss.build.rpm
+  when: not build_rpm
 
 - name: Clean, build, and test jss on master (real)
   shell: make clean all test_jss >/home/jss/jss_master_build.out 2>&1
@@ -142,16 +141,15 @@
   environment:
     - JAVA_HOME: /etc/alternatives/java_sdk_openjdk
     - USE_64: 1
-    - CHECK_DEPRECATION: "{{ jss.build.check_deprecation }}"
-  when: not jss.build.rpm
+  when: not build_rpm
 
 - name: Checkout branch
-  command: "git checkout {{ jss.origin.branch }}"
+  command: "git checkout {{ origin_branch }}"
   args:
     chdir: /home/jss/sandbox/jss
   become: yes
   become_user: jss
-  when: not jss.build.rpm
+  when: not build_rpm
 
 
 - name: Clean, build, and test jss on branch
@@ -163,8 +161,7 @@
   environment:
     - JAVA_HOME: /etc/alternatives/java_sdk_openjdk
     - USE_64: 1
-    - CHECK_DEPRECATION: "{{ jss.build.check_deprecation }}"
-  when: not jss.build.rpm
+  when: not build_rpm
 
 - name: Build RPM
   shell: ./build.sh
@@ -175,5 +172,4 @@
   environment:
     - JAVA_HOME: /etc/alternatives/java_sdk_openjdk
     - USE_64: 1
-    - CHECK_DEPRECATION: "{{ jss.build.check_deprecation }}"
-  when: jss.build.rpm
+  when: build_rpm

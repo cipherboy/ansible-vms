@@ -1,9 +1,5 @@
-tomcatjss:
-  origin:
-    url: https://github.com/edewata/tomcatjss
-    branch: fips
-  upstream:
-    url: https://github.com/dogtagpki/tomcatjss
-    branch: master
-  build:
-    rpm: true
+origin_url: https://github.com/dogtagpki/tomcatjss
+origin_branch: master
+upstream_url: https://github.com/dogtagpki/tomcatjss
+upstream_branch: master
+build_rpm: true

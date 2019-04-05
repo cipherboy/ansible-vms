@@ -1,10 +1,6 @@
-pki:
-  origin:
-    url: https://github.com/edewata/pki
-    branch: fips
-  upstream:
-    url: https://github.com/dogtagpki/pki
-    branch: master
-  build:
-    rpm: true
-    version: "10.6"
+origin_url: https://github.com/dogtagpki/pki
+origin_branch: master
+upstream_url: https://github.com/dogtagpki/pki
+upstream_branch: master
+build_rpm: true
+build_version: "10.7"

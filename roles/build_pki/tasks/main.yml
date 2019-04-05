@@ -47,16 +47,16 @@
 
 - name: Clone pki repository
   git:
-    repo: "{{ pki.origin.url }}"
+    repo: "{{ origin_url }}"
     clone: yes
     update: yes
     dest: /home/pki/sandbox/pki
-    version: "{{ pki.origin.branch }}"
+    version: "{{ origin_branch }}"
   become: yes
   become_user: pki
 
 - name: Add pki upstream
-  command: "git remote add upstream {{ pki.upstream.url }}"
+  command: "git remote add upstream {{ upstream_url }}"
   args:
     chdir: /home/pki/sandbox/pki
   become: yes
@@ -70,7 +70,7 @@
   become_user: pki
 
 - name: Rebase against upstream
-  command: "git rebase upstream/{{ pki.upstream.branch }}"
+  command: "git rebase upstream/{{ upstream_branch }}"
   args:
     chdir: /home/pki/sandbox/pki
   become: yes
@@ -80,7 +80,7 @@
   command: dnf build-dep --spec pki.spec -y
   args:
     chdir: /home/pki/sandbox/pki
-  when: pki.build.version == "10.6"
+  when: build_version == "10.6" or build_version == "10.7"
 
 - name: Build RPM for 10.5
   shell: ./scripts/compose_pki_core_packages rpms
@@ -88,7 +88,7 @@
     chdir: /home/pki/sandbox/pki
   become: yes
   become_user: pki
-  when: pki.build.rpm and pki.build.version == "10.5"
+  when: build_rpm and build_version == "10.5"
 
 - name: Build RPM for 10.6
   shell: bash build.sh
@@ -96,4 +96,4 @@
     chdir: /home/pki/sandbox/pki
   become: yes
   become_user: pki
-  when: pki.build.rpm and pki.build.version == "10.6"
+  when: build_rpm and (build_version == "10.6" or build_version == "10.7")

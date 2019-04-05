@@ -47,16 +47,16 @@
 
 - name: Clone tomcatjss repository
   git:
-    repo: "{{ tomcatjss.origin.url }}"
+    repo: "{{ origin_url }}"
     clone: yes
     update: yes
     dest: /home/tomcatjss/sandbox/tomcatjss
-    version: "{{ tomcatjss.origin.branch }}"
+    version: "{{ origin_branch }}"
   become: yes
   become_user: tomcatjss
 
 - name: Add tomcatjss upstream
-  command: "git remote add upstream {{ tomcatjss.upstream.url }}"
+  command: "git remote add upstream {{ upstream_url }}"
   args:
     chdir: /home/tomcatjss/sandbox/tomcatjss
   become: yes
@@ -70,7 +70,7 @@
   become_user: tomcatjss
 
 - name: Rebase against upstream
-  command: "git rebase upstream/{{ tomcatjss.upstream.branch }}"
+  command: "git rebase upstream/{{ upstream_branch }}"
   args:
     chdir: /home/tomcatjss/sandbox/tomcatjss
   become: yes
@@ -85,4 +85,4 @@
     chdir: /home/tomcatjss/sandbox/tomcatjss
   become: yes
   become_user: tomcatjss
-  when: tomcatjss.build.rpm
+  when: build_rpm

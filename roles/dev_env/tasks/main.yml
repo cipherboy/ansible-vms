@@ -22,6 +22,9 @@
      - tmux
      - vim-enhanced
 
+- name: Install jedi-vim
+  shell: dnf install -y https://dl.fedoraproject.org/pub/fedora/linux/development/rawhide/Everything/x86_64/os/Packages/v/vim-jedi-0.9.0-1.fc31.noarch.rpm
+
 - name: Disable firewalld
   systemd:
     name: firewalld

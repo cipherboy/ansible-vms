@@ -1,10 +1,5 @@
-jss:
-  origin:
-    url: https://github.com/cipherboy/jss
-    branch: no-tests
-  upstream:
-    url: https://github.com/dogtagpki/jss
-    branch: master
-  build:
-    rpm: true
-    check_deprecation: 0
+origin_url: https://github.com/cipherboy/jss
+origin_branch: positive-bigintegers
+upstream_url: https://github.com/dogtagpki/jss
+upstream_branch: master
+build_rpm: true
