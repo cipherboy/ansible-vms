@@ -1,5 +1,5 @@
-origin_url: https://github.com/dogtagpki/pki
-origin_branch: master
+origin_url: https://github.com/edewata/pki
+origin_branch: maven
 upstream_url: https://github.com/dogtagpki/pki
 upstream_branch: master
 build_rpm: true

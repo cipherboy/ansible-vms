@@ -1,3 +1,2 @@
-pki:
-  version: "10.6"
-  source: "build"
+pki_version: "10.6"
+pki_source: "repo"
