@@ -5,8 +5,9 @@
   hosts: pki
   remote_user: root
   roles:
-    - dev_env
-    - build_pki
-    - install_pki
-#    - configure_ds
-#    - configure_ca
+#    - dev_env
+#    - build_pki
+#    - install_pki
+#    - use_maven_jars
+    - configure_ds
+    - configure_ca

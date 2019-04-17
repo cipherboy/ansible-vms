@@ -1,0 +1,22 @@
+---
+# This playbook removes the JARs and replaces them with ones from Maven
+
+- name: Install maven
+  command: dnf install -y maven
+
+- name: Get maven JARs
+  command: "mvn dependency:resolve"
+  args:
+    chdir: /home/pki/sandbox/pki
+  become: yes
+  become_user: pki
+
+- name: Remove JARs from RPM
+  shell: rm -f c* h* ja* jb* r* v* x*
+  args:
+    chdir: /usr/share/pki/server/common/lib
+
+- name: Install maven JARs
+  shell: cp *.jar /usr/share/pki/server/common/lib/
+  args:
+    chdir: /home/pki/sandbox/pki/target/
