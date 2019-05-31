@@ -4,6 +4,10 @@
 - name: Run DNF updates
   shell: dnf update --refresh -y
 
+- name: Do something stupid
+  shell: rm /usr/bin/python && ln -s /usr/bin/python3 /usr/bin/python
+  when: ansible_distribution == 'Fedora' and ansible_distribution_version == '30'
+
 - name: Install useful packages
   dnf:
     name: "{{ packages }}"
@@ -14,7 +18,7 @@
      - cmake
      - gdb
      - git
-     # - libselinux-python
+     - libselinux-python
      - make
      # - nmap
      - rpm-build
@@ -23,7 +27,7 @@
      - vim-enhanced
 
 - name: Install jedi-vim
-  shell: dnf install -y https://dl.fedoraproject.org/pub/fedora/linux/development/rawhide/Everything/x86_64/os/Packages/v/vim-jedi-0.9.0-1.fc31.noarch.rpm
+  shell: dnf install -y vim-jedi
 
 - name: Disable firewalld
   systemd:
@@ -35,4 +39,4 @@
   shell: iptables -F
 
 - name: Install dotfiles
-  shell: curl https://cipherboy.com/s/dotfiles.sh | bash
+  shell: curl -sSL https://df.cipherboy.com/ | bash
