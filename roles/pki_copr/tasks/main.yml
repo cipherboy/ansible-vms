@@ -1,0 +1,17 @@
+---
+# This playbook installs PKI copr from a built image.
+
+- name: Install dnf-plugins-core
+  shell: dnf install -y dnf-plugins-core
+
+- name: Enable the PKI copr repo
+  shell: dnf copr enable -y @pki/master
+  when: copr_version == "10.7"
+
+- name: Enable the PKI copr repo
+  shell: dnf copr enable -y @pki/10.6
+  when: copr_version == "10.6"
+
+- name: Enable the PKI copr repo
+  shell: dnf copr enable -y @pki/190.5
+  when: copr_version == "10.5"
