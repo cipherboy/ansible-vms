@@ -5,7 +5,7 @@
   shell: dnf update --refresh -y
 
 - name: Do something stupid
-  shell: rm /usr/bin/python && ln -s /usr/bin/python3 /usr/bin/python
+  shell: (rm -f /usr/bin/python || true) && ln -s /usr/bin/python3 /usr/bin/python
   when: ansible_distribution == 'Fedora' and ansible_distribution_version == '30'
 
 - name: Install useful packages

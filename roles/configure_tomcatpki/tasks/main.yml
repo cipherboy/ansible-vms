@@ -14,10 +14,31 @@
   shell: echo "Secret.123" > /tmp/password.txt
 
 - name: Generate noise
-  shell: openssl rand -out /tmp/noise.bin 2048
+  shell: openssl rand -out /tmp/noise.bin 4096
 
-- name: Generate and sign certificate
-  shell: certutil -S -x -d /var/lib/tomcats/pki/alias -f /tmp/password.txt -z /tmp/noise.bin -n sslserver -s "CN=$HOSTNAME" -t "CT,C,C" -m $RANDOM -k rsa -g 2048 -Z SHA256 --keyUsage certSigning,keyEncipherment
+- name: Generate SKID
+  shell: openssl rand -hex 20
+  register: skid
+
+- name: Generate CA certificate
+  shell: echo -e "y\n\ny\ny\n${SKID}\n\n\n\n${SKID}\n\n2\n7\n${OCSP}\n\n\n\n" | certutil -S -x -d /var/lib/tomcats/pki/alias -f /tmp/password.txt -z /tmp/noise.bin -n "CA-Root" -s "CN=CA Root Certificate,OU=pki-tomcat,O=CIPHERBOY" -t "CTu,Cu,Cu" -m $RANDOM -k rsa -g 4096 -v 1024 -Z SHA256 -2 -3 --keyUsage critical,certSigning,crlSigning,digitalSignature,nonRepudiation --extAIA --extSKID
+  environment:
+    SKID: "0x{{ skid.stdout }}"
+    OCSP: "http://localhost:8080/ca/ocsp"
+
+- name: Generate Server certificate
+  shell: certutil -R -d /var/lib/tomcats/pki/alias -f /tmp/password.txt -z /tmp/noise.bin -k rsa -g 4096 -Z SHA256 -s "CN=localhost,O=CIPHERBOY" --keyUsage critical,dataEncipherment,keyEncipherment,digitalSignature --extKeyUsage serverAuth -o /tmp/sslserver.csr.der
+
+- name: Convert Server certificate to ASCII
+  shell: openssl req -inform der -in /tmp/sslserver.csr.der -out /tmp/sslserver.csr
+
+- name: Sign Server certificate with CA certificate
+  shell: echo -e "y\n\n\n\n\n2\n7\n${OCSP}\n\n\n" | certutil -C -d /var/lib/tomcats/pki/alias -f /tmp/password.txt -m $RANDOM -a -i /tmp/sslserver.crt -o /tmp/sslserver.crt -c "CA-Root" -v 1024 -3 --extAIA --keyUsage critical,dataEncipherment,keyEncipherment,digitalSignature --extKeyUsage serverAuth
+  environment:
+    OCSP: "http://localhost:8080/ca/ocsp"
+
+- name: Import Server certificate
+  shell: certutil -d /var/lib/tomcats/pki/alias -f /tmp/password.txt -A -n sslserver -t u,u,u -a -i /tmp/sslserver.crt
 
 - name: Enable JSS
   shell: pki-server jss-enable -i tomcat@pki
