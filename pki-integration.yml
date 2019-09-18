@@ -5,11 +5,6 @@
   hosts: integration
   remote_user: root
   roles:
-    - dev_env
-    - build_jss
-    - install_jss
-    - build_tomcatjss
-    - install_tomcatjss
-    - build_pki
-    - install_pki
-    - configure_ca
+     - build_pki
+     - install_pki
+     - configure_ca

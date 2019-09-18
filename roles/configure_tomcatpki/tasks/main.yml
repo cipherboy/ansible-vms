@@ -1,6 +1,9 @@
 ---
 # This role configures the installation of a dogtag PKI master
 
+- name: Destroy any existing Tomcat servers
+  shell: pki-server remove tomcat@pki || true
+
 - name: Create Tomcat PKI server
   shell: pki-server create tomcat@pki
 
@@ -33,7 +36,7 @@
   shell: openssl req -inform der -in /tmp/sslserver.csr.der -out /tmp/sslserver.csr
 
 - name: Sign Server certificate with CA certificate
-  shell: echo -e "y\n\n\n\n\n2\n7\n${OCSP}\n\n\n" | certutil -C -d /var/lib/tomcats/pki/alias -f /tmp/password.txt -m $RANDOM -a -i /tmp/sslserver.crt -o /tmp/sslserver.crt -c "CA-Root" -v 1024 -3 --extAIA --keyUsage critical,dataEncipherment,keyEncipherment,digitalSignature --extKeyUsage serverAuth
+  shell: echo -e "y\n\n\n\n\n2\n7\n${OCSP}\n\n\n" | certutil -C -d /var/lib/tomcats/pki/alias -f /tmp/password.txt -m $RANDOM -a -i /tmp/sslserver.csr -o /tmp/sslserver.crt -c "CA-Root" -v 1024 -3 --extAIA --keyUsage critical,dataEncipherment,keyEncipherment,digitalSignature --extKeyUsage serverAuth
   environment:
     OCSP: "http://localhost:8080/ca/ocsp"
 

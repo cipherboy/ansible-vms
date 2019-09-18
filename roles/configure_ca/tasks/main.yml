@@ -1,13 +1,23 @@
 ---
 # This role configures the installation of a dogtag PKI master
 
-- name: Copy CA configuration
+- name: Copy CA RSA configuration
   copy:
-    src: ca.cfg
+    src: CA-RSA.cfg
     dest: /root/ca.cfg
     owner: root
     group: root
     mode: 0644
+  when: pki_type == 'RSA'
+
+- name: Copy CA ECconfiguration
+  copy:
+    src: CA-EC.cfg
+    dest: /root/ca.cfg
+    owner: root
+    group: root
+    mode: 0644
+  when: pki_type == 'EC'
 
 - name: Spawn CA
   shell: pkispawn -f /root/ca.cfg -s CA

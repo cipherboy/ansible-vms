@@ -9,7 +9,7 @@ tomcatjss:
     192.168.122.194
 integration:
   hosts:
-    192.168.122.33
+    192.168.122.217
 upgrade:
   hosts:
     192.168.122.17

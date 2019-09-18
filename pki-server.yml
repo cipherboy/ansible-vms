@@ -5,5 +5,4 @@
   hosts: server
   remote_user: root
   roles:
-    - dev_env
     - configure_tomcatpki

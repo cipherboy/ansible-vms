@@ -2,4 +2,9 @@
 # This playbook installs Tomcat-JSS from a built image.
 
 - name: Install Tomcat-JSS packages from build
-  shell: dnf install /home/tomcatjss/build/tomcatjss/RPMS/*.rpm -y --allowerasing
+  shell: dnf install /home/tomcatjss/build/tomcatjss/RPMS/*.rpm -y
+  when: tomcatjss_source == "build"
+
+- name: Install Tomcat-JSS packages from repo
+  shell: dnf install tomcatjss -y
+  when: tomcatjss_source == "repo"
