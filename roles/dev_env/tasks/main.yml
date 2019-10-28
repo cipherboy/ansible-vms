@@ -18,16 +18,17 @@
      - cmake
      - gdb
      - git
-     - libselinux-python
+     - libselinux-python3
      - make
      # - nmap
      - rpm-build
-     - screen
+     # - screen
      - tmux
      - vim-enhanced
 
 - name: Install jedi-vim
-  shell: dnf install -y vim-jedi
+  shell: dnf install -y vim-jedi ccache nmap screen
+  when: ansible_distribution == 'Fedora'
 
 - name: Disable firewalld
   systemd:
