@@ -5,6 +5,10 @@
   shell: dnf install /home/tomcatjss/build/tomcatjss/RPMS/*.rpm -y
   when: tomcatjss_source == "build"
 
+- name: Remove Tomcat Native packages
+  shell: dnf remove -y tomcat-native
+  when: tomcatjss_source == "repo"
+
 - name: Install Tomcat-JSS packages from repo
   shell: dnf install tomcatjss -y
   when: tomcatjss_source == "repo"

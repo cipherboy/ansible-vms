@@ -67,6 +67,7 @@
     dest: /home/jss/sandbox/nspr
   become: yes
   become_user: jss
+  when: not build_rpm
 
 - name: Clone nss repository
   hg:
@@ -76,6 +77,7 @@
     dest: /home/jss/sandbox/nss
   become: yes
   become_user: jss
+  when: not build_rpm
 
 - name: Clone jss repository
   git:

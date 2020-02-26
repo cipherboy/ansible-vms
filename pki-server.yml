@@ -5,12 +5,8 @@
   hosts: server
   remote_user: root
   roles:
-    - dev_env
-    - build_jss
-    - install_jss
-    - build_tomcatjss
+    - pki_copr
     - install_tomcatjss
-    - build_pki
     - install_pki
     - configure_ds
     - configure_ca
