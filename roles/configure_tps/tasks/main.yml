@@ -1,0 +1,26 @@
+---
+# This role configures the installation of a dogtag PKI master
+
+- name: Copy TPS RSA configuration
+  copy:
+    src: TPS-RSA.cfg
+    dest: /root/tps.cfg
+    owner: root
+    group: root
+    mode: 0644
+  when: pki_type == 'RSA'
+
+- name: Copy TPS EC configuration
+  copy:
+    src: TPS-EC.cfg
+    dest: /root/tps.cfg
+    owner: root
+    group: root
+    mode: 0644
+  when: pki_type == 'EC'
+
+- name: Replace with hostname
+  shell: sed "s/\$HOSTNAME/$(hostname)/" -i /root/tps.cfg
+
+- name: Spawn TPS
+  shell: pkispawn -f /root/tps.cfg -s TPS

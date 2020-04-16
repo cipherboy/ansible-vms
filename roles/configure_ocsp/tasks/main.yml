@@ -1,0 +1,26 @@
+---
+# This role configures the installation of a dogtag PKI master
+
+- name: Copy OCSP RSA configuration
+  copy:
+    src: OCSP-RSA.cfg
+    dest: /root/ocsp.cfg
+    owner: root
+    group: root
+    mode: 0644
+  when: pki_type == 'RSA'
+
+- name: Copy OCSP EC configuration
+  copy:
+    src: OCSP-EC.cfg
+    dest: /root/ocsp.cfg
+    owner: root
+    group: root
+    mode: 0644
+  when: pki_type == 'EC'
+
+- name: Replace with hostname
+  shell: sed "s/\$HOSTNAME/$(hostname)/" -i /root/ocsp.cfg
+
+- name: Spawn OCSP
+  shell: pkispawn -f /root/ocsp.cfg -s OCSP
