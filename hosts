@@ -19,3 +19,9 @@ console:
 server:
   hosts:
     192.168.122.100
+sslengine:
+  hosts:
+    192.168.122.100
+rhel82:
+  hosts:
+    192.168.122.106

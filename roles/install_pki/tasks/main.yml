@@ -7,7 +7,7 @@
 
 - name: Install PKI packages from 10.6 build
   shell: dnf install /home/pki/build/pki/RPMS/*.rpm -y
-  when: (pki_version == "10.6" or pki_version == "10.7") and pki_source == "build"
+  when: (pki_version != "10.6") and pki_source == "build"
 
 - name: Install PKI packages from repository
   shell: dnf install -y dogtag-pki pki-base pki-tools

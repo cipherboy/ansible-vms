@@ -80,7 +80,7 @@
   command: dnf build-dep /home/tomcatjss/sandbox/tomcatjss/tomcatjss.spec -y
 
 - name: Build RPM for 10.6
-  shell: bash build.sh
+  shell: bash build.sh --with-timestamp --with-commit-id
   args:
     chdir: /home/tomcatjss/sandbox/tomcatjss
   become: yes

@@ -166,7 +166,7 @@
   when: not build_rpm
 
 - name: Build RPM
-  shell: ./build.sh
+  shell: ./build.sh --with-timestamp --with-commit-id
   args:
     chdir: /home/jss/sandbox/jss
   become: yes
