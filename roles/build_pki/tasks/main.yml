@@ -76,6 +76,9 @@
   become: yes
   become_user: pki
 
+- name: Remove tomcat-native if it exists
+  command: dnf remove tomcat-native -y
+
 - name: Install additional PKI dependencies
   command: dnf build-dep --spec pki.spec -y
   args:
