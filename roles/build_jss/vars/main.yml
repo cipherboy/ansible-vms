@@ -1,5 +1,5 @@
 origin_url: https://github.com/cipherboy/jss
-origin_branch: algorithm-id-no-space
+origin_branch: sslsocket-from-sslengine
 upstream_url: https://github.com/dogtagpki/jss
 upstream_branch: master
 build_rpm: true

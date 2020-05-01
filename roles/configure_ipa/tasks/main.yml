@@ -1,0 +1,26 @@
+---
+# This role configures the installation of an IPA master
+
+- name: Install 389DS
+  dnf:
+    name: "{{ packages }}"
+    state: installed
+  vars:
+    packages:
+     - ipa-server
+
+- name: Set IPA hostname in /etc/hosts
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ ansible_default_ipv4.address }} ipa.example.com"
+    regexp: '(\s)*{{ ansible_default_ipv4.address }}(\s)*ipa.example.com(\s)*'
+
+- name: Set IPA hostname via hostnamectl
+  hostname:
+    name: ipa.example.com
+
+- name: Reboot after setting hostname
+  reboot:
+
+- name: Install IPA
+  shell: ipa-server-install -U -r EXAMPLE.COM -n example.com -p Secret.123 -a Secret.123 --hostname=ipa.example.com --setup-kra
