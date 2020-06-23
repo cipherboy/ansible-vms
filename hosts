@@ -9,7 +9,7 @@ tomcatjss:
     192.168.122.194
 integration:
   hosts:
-    192.168.122.81
+    192.168.122.48
 upgrade:
   hosts:
     192.168.122.17
@@ -21,7 +21,13 @@ server:
     192.168.122.100
 sslengine:
   hosts:
-    192.168.122.184
+    192.168.122.156
 rhel82:
   hosts:
     192.168.122.106
+ipa:
+  hosts:
+    192.168.122.100
+replica:
+  hosts:
+    192.168.122.42

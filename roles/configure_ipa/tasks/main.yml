@@ -1,26 +1,37 @@
 ---
 # This role configures the installation of an IPA master
 
-- name: Install 389DS
-  dnf:
-    name: "{{ packages }}"
-    state: installed
-  vars:
-    packages:
-     - ipa-server
-
 - name: Set IPA hostname in /etc/hosts
   lineinfile:
     path: /etc/hosts
-    line: "{{ ansible_default_ipv4.address }} ipa.example.com"
-    regexp: '(\s)*{{ ansible_default_ipv4.address }}(\s)*ipa.example.com(\s)*'
+    line: "{{ ansible_default_ipv4.address }} {{ hostname }}.{{ domain }}"
+    regexp: '(\s)*{{ ansible_default_ipv4.address }}(\s)*{{ hostname }}.{{ domain }}(\s)*'
+  when: role == "master" or role == "client" or role == "replica"
 
 - name: Set IPA hostname via hostnamectl
   hostname:
-    name: ipa.example.com
+    name: "{{ hostname }}.{{ domain }}"
+  when: role == "master" or role == "client" or role == "replica"
 
 - name: Reboot after setting hostname
   reboot:
+  when: role == "master" or role == "client" or role == "replica"
 
-- name: Install IPA
-  shell: ipa-server-install -U -r EXAMPLE.COM -n example.com -p Secret.123 -a Secret.123 --hostname=ipa.example.com --setup-kra
+- name: Install IPA Server Master
+  shell: ipa-server-install -U -r "{{ realm|upper }}" -n "{{ domain }}" -p "{{ password }}" -a "{{ password }}" "--hostname={{ hostname }}.{{ domain }}" --setup-kra
+  when: role == "master"
+
+- name: Install IPA Client
+  shell: ipa-client-install -U "--domain={{ domain }}" "--realm={{ realm|upper }}" "--server={{ master_hostname }}.{{ domain }}" -w "{{ password }}" "--principal=admin@{{ realm|upper }}"
+  when: role == "client" or role == "replica"
+
+- name: kinit to admin
+  shell: echo "{{ password }}" | kinit "admin@{{ realm|upper }}"
+
+- name: Add IPA replica to master
+  shell: ipa hostgroup-add-member ipaservers --hosts "{{ hostname }}.{{ domain }}"
+  when: role == "master_add_replica"
+
+- name: Install IPA Replica
+  shell: ipa-replica-install
+  when: role == "replica_finish"

@@ -6,7 +6,7 @@
 
 - name: Enable the PKI copr repo
   shell: dnf copr enable -y @pki/master
-  when: copr_version == "10.7"
+  when: (copr_version == "10.7" or copr_version == "master")
 
 - name: Enable the PKI copr repo
   shell: dnf copr enable -y @pki/10.6
@@ -17,4 +17,4 @@
   when: copr_version == "10.5"
 
 - name: Refresh repositories
-  shell: dnf update --refresh --assumeno
+  shell: dnf update --refresh --assumeno || true

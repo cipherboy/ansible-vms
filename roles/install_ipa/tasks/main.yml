@@ -1,0 +1,10 @@
+---
+# This playbook installs FreeIPA from a built image.
+
+- name: Install IPA packages from build
+  shell: dnf install /home/ipa/sandbox/freeipa/dist/rpms/*.rpm -y
+  when: ipa_source == "build"
+
+- name: Install IPA packages from repository
+  shell: dnf install -y ipa-server
+  when: ipa_source == "repo"

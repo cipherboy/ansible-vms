@@ -1,6 +1,9 @@
 ---
 # Creates a development environment
 
+- name: Update system time
+  shell: chronyc makestep
+
 - name: Run DNF updates
   shell: dnf update --refresh -y
 

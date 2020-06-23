@@ -1,0 +1,9 @@
+---
+# This playbook provisions a node to build Dogtag PKI
+
+- name: Load all roles
+  hosts: replica
+  remote_user: root
+  roles:
+     - dev_env
+     - configure_ipa

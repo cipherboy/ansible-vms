@@ -1,0 +1,93 @@
+---
+# This playbook builds IPA from the specified git repository
+#
+# To define which git repository, see the vars in roles/build_ipa/vars/main.yml
+
+- name: Create ipa user
+  user:
+    name: ipa
+    shell: /bin/bash
+    generate_ssh_key: yes
+
+- name: Set up ipa git name
+  command: git config --global user.name ipa
+  args:
+    chdir: /home/ipa
+  become: yes
+  become_user: ipa
+
+- name: Set up ipa git email
+  command: git config --global user.email ipa@github.com
+  args:
+    chdir: /home/ipa
+  become: yes
+  become_user: ipa
+
+- name: Remove sandbox directory
+  file:
+    path: /home/ipa/sandbox
+    state: absent
+    force: yes
+
+- name: Remove build directory
+  file:
+    path: /home/ipa/build
+    state: absent
+    force: yes
+
+- name: Create sandbox directory
+  file:
+    path: /home/ipa/sandbox
+    state: directory
+    owner: ipa
+    group: ipa
+
+- name: Clone ipa repository
+  git:
+    repo: "{{ origin_url }}"
+    clone: yes
+    update: yes
+    dest: /home/ipa/sandbox/freeipa
+    version: "{{ origin_branch }}"
+  become: yes
+  become_user: ipa
+
+- name: Add ipa upstream
+  command: "git remote add upstream {{ upstream_url }}"
+  args:
+    chdir: /home/ipa/sandbox/freeipa
+  become: yes
+  become_user: ipa
+
+- name: Update from upstream
+  command: git fetch upstream
+  args:
+    chdir: /home/ipa/sandbox/freeipa
+  become: yes
+  become_user: ipa
+
+- name: Rebase against upstream
+  command: "git rebase upstream/{{ upstream_branch }}"
+  args:
+    chdir: /home/ipa/sandbox/freeipa
+  become: yes
+  become_user: ipa
+
+- name: Enable FreeIPA COPR
+  command: dnf copr enable @freeipa/freeipa-master -y
+
+- name: Refresh DNF respositories
+  command: dnf update --refresh -y
+
+- name: Install additional IPA dependencies
+  command: dnf builddep -b -D "with_wheels 1" -D "with_lint 1" -D "with_doc 1" --spec freeipa.spec.in --best --allowerasing --setopt=install_weak_deps=True -y
+  args:
+    chdir: /home/ipa/sandbox/freeipa
+
+- name: Build RPMs
+  shell: bash ./makerpms.sh 
+  args:
+    chdir: /home/ipa/sandbox/freeipa
+  become: yes
+  become_user: ipa
+  when: build_rpm

@@ -1,0 +1,6 @@
+origin_url: https://github.com/cipherboy/freeipa
+origin_branch: pki-cert-verify
+upstream_url: https://github.com/freeipa/freeipa
+upstream_branch: master
+build_rpm: true
+build_version: "master"

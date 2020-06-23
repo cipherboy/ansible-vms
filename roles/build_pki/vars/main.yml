@@ -1,5 +1,5 @@
 origin_url: https://github.com/cipherboy/pki
-origin_branch: master
+origin_branch: fix-tomcat-conf-fips 
 upstream_url: https://github.com/dogtagpki/pki
 upstream_branch: master
 build_rpm: true

@@ -1,0 +1,12 @@
+## Role choices:
+# - client
+# - replica
+# - replica_finish
+# - master
+# - master_add_replica
+role: replica
+master_hostname: ipa
+hostname: replica
+domain: example.com
+realm: EXAMPLE.COM
+password: Secret.123
