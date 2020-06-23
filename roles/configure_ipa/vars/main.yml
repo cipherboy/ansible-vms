@@ -4,9 +4,13 @@
 # - replica_finish
 # - master
 # - master_add_replica
-role: replica
-master_hostname: ipa
+role: master_add_replica
 hostname: replica
+address: 192.168.122.42
+master_hostname: ipa
+master_address: 192.168.122.100
+replica_hostname: replica
+replica_address: 192.168.122.42
 domain: example.com
 realm: EXAMPLE.COM
 password: Secret.123

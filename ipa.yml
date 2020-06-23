@@ -5,5 +5,5 @@
   hosts: ipa
   remote_user: root
   roles:
-     - dev_env
+     - fix_time
      - configure_ipa

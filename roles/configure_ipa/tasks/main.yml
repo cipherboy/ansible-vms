@@ -8,6 +8,20 @@
     regexp: '(\s)*{{ ansible_default_ipv4.address }}(\s)*{{ hostname }}.{{ domain }}(\s)*'
   when: role == "master" or role == "client" or role == "replica"
 
+- name: Set IPA master hostname in /etc/hosts on client/replica
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ master_address }} {{ master_hostname }}.{{ domain }}"
+    regexp: '(\s)*{{ master_address }}(\s)*{{ master_hostname }}.{{ domain }}(\s)*'
+  when: role == "client" or role == "replica"
+
+- name: Set IPA replica hostname in /etc/hosts on master
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ replica_address }} {{ replica_hostname }}.{{ domain }}"
+    regexp: '(\s)*{{ replica_address }}(\s)*{{ replica_hostname }}.{{ domain }}(\s)*'
+  when: role == "master_add_replica"
+
 - name: Set IPA hostname via hostnamectl
   hostname:
     name: "{{ hostname }}.{{ domain }}"
@@ -27,9 +41,10 @@
 
 - name: kinit to admin
   shell: echo "{{ password }}" | kinit "admin@{{ realm|upper }}"
+  when: role == "replica" or role == "master" or role == "master_add_replica"
 
 - name: Add IPA replica to master
-  shell: ipa hostgroup-add-member ipaservers --hosts "{{ hostname }}.{{ domain }}"
+  shell: ipa hostgroup-add-member ipaservers --hosts "{{ replica_hostname }}.{{ domain }}"
   when: role == "master_add_replica"
 
 - name: Install IPA Replica

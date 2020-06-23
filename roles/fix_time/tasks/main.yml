@@ -1,0 +1,5 @@
+---
+# Fix the system time after snapshot
+
+- name: Update system time
+  shell: chronyc makestep
