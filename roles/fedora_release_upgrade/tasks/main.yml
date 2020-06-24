@@ -1,0 +1,14 @@
+# Upgrade to a new Fedora release
+
+- name: Update all existing packages
+  shell: dnf update --refresh -y
+
+- name: Install required plugin
+  shell: dnf install dnf-plugin-system-upgrade -y
+
+- name: Perform system upgrade
+  shell: dnf system-upgrade download "--releasever={{ version }}" -y
+
+- name: Reboot for system upgrade
+  shell: dnf system-upgrade reboot
+
