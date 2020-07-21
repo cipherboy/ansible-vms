@@ -12,4 +12,4 @@
     - install_tomcatjss
     - build_pki
     - install_pki
-    - configure_ipa
+    - configure_tomcatpki

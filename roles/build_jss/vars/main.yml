@@ -1,5 +1,5 @@
 origin_url: https://github.com/cipherboy/jss
-origin_branch: make-sslengine-default
+origin_branch: master
 upstream_url: https://github.com/dogtagpki/jss
 upstream_branch: master
 build_rpm: true

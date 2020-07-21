@@ -8,19 +8,18 @@
     regexp: '(\s)*{{ ansible_default_ipv4.address }}(\s)*{{ hostname }}.{{ domain }}(\s)*'
   when: role == "master" or role == "client" or role == "replica"
 
-- name: Set IPA master hostname in /etc/hosts on client/replica
-  lineinfile:
-    path: /etc/hosts
-    line: "{{ master_address }} {{ master_hostname }}.{{ domain }}"
-    regexp: '(\s)*{{ master_address }}(\s)*{{ master_hostname }}.{{ domain }}(\s)*'
+- name: Get device address
+  shell: nmcli --colors no --terse --fields name connection show | head -n 1
+  register: ifaddr
   when: role == "client" or role == "replica"
 
-- name: Set IPA replica hostname in /etc/hosts on master
-  lineinfile:
-    path: /etc/hosts
-    line: "{{ replica_address }} {{ replica_hostname }}.{{ domain }}"
-    regexp: '(\s)*{{ replica_address }}(\s)*{{ replica_hostname }}.{{ domain }}(\s)*'
-  when: role == "master_add_replica"
+- name: Set DNS for device
+  shell: nmcli connection modify "{{ ifaddr.stdout }}" +ipv4.dns "{{ master_address }}"
+  when: role == "client" or role == "replica"
+
+- name: Remove default DNS for device
+  shell: nmcli connection modify "{{ ifaddr.stdout }}" +ipv4.ignore-auto-dns yes
+  when: role == "client" or role == "replica"
 
 - name: Set IPA hostname via hostnamectl
   hostname:
@@ -32,7 +31,7 @@
   when: role == "master" or role == "client" or role == "replica"
 
 - name: Install IPA Server Master
-  shell: ipa-server-install -U -r "{{ realm|upper }}" -n "{{ domain }}" -p "{{ password }}" -a "{{ password }}" "--hostname={{ hostname }}.{{ domain }}" --setup-kra
+  shell: ipa-server-install -U -r "{{ realm|upper }}" -n "{{ domain }}" -p "{{ password }}" -a "{{ password }}" "--hostname={{ hostname }}.{{ domain }}" --setup-kra --setup-dns --auto-reverse "--forwarder={{ forwarder }}"
   when: role == "master"
 
 - name: Install IPA Client

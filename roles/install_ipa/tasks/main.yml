@@ -6,5 +6,5 @@
   when: ipa_source == "build"
 
 - name: Install IPA packages from repository
-  shell: dnf install -y ipa-server
+  shell: dnf install -y 'ipa-server*'
   when: ipa_source == "repo"
