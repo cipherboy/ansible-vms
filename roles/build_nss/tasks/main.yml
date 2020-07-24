@@ -1,0 +1,112 @@
+---
+# This playbook builds NSS from the specified dist-git repository. This
+# doesn't build a new upstream NSS release, unless otherwise specified.
+#
+# To define which dist-git repository, see the vars in roles/nss/vars/main.yml
+
+- name: Create nss user
+  user:
+    name: nss
+    shell: /bin/bash
+    generate_ssh_key: yes
+
+- name: Set up nss git name
+  command: git config --global user.name nss
+  become: yes
+  become_user: nss
+
+- name: Set up nss git email
+  command: git config --global user.email nss@github.com
+  become: yes
+  become_user: nss
+
+- name: Remove sandbox directory
+  file:
+    path: /home/nss/sandbox
+    state: absent
+    force: yes
+
+- name: Remove build directory
+  file:
+    path: /home/nss/build
+    state: absent
+    force: yes
+
+- name: Create sandbox directory
+  file:
+    path: /home/nss/sandbox
+    state: directory
+    owner: nss
+    group: nss
+
+- name: Clone nss repository
+  git:
+    repo: "{{ origin_url }}"
+    clone: yes
+    update: yes
+    dest: /home/nss/sandbox/nss
+    version: "{{ origin_branch }}"
+  become: yes
+  become_user: nss
+
+- name: Add nss upstream
+  command: "git remote add upstream {{ upstream_url }}"
+  args:
+    chdir: /home/nss/sandbox/nss
+  become: yes
+  become_user: nss
+  when: rebase_distgit
+
+- name: Update from upstream
+  command: git fetch upstream
+  args:
+    chdir: /home/nss/sandbox/nss
+  become: yes
+  become_user: nss
+  when: rebase_distgit
+
+- name: Rebase against upstream
+  command: "git rebase upstream/{{ upstream_branch }}"
+  args:
+    chdir: /home/nss/sandbox/nss
+  become: yes
+  become_user: nss
+  when: rebase_distgit
+
+- name: Checkout upstream master
+  command: "git checkout upstream/master"
+  args:
+    chdir: /home/nss/sandbox/nss
+  become: yes
+  become_user: nss
+  when: not build_rpm
+
+- name: Install dependencies
+  command: "dnf builddep -y nss.spec"
+  args:
+    chdir: /home/nss/sandbox/nss
+  when: build_rpm
+
+- name: Install fedpkg
+  command: "dnf install -y fedpkg"
+  when: build_rpm
+
+- name: Checkout branch
+  command: "git checkout {{ origin_branch }}"
+  args:
+    chdir: /home/nss/sandbox/nss
+  become: yes
+  become_user: nss
+  when: not build_rpm
+
+- name: Build RPM
+  shell: "fedpkg --release f{{ ansible_distribution_major_version }} local"
+  args:
+    chdir: /home/nss/sandbox/nss
+  become: yes
+  become_user: nss
+  when: build_rpm
+
+- name: Install RPM
+  shell: "dnf install -y /home/nss/sandbox/nss/*/*.rpm"
+  when: build_rpm

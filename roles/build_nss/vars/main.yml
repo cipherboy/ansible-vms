@@ -1,0 +1,6 @@
+origin_url: https://src.fedoraproject.org/forks/cipherboy/rpms/nss.git
+origin_branch: debug
+upstream_url: https://src.fedoraproject.org/rpms/nss.git
+upstream_branch: master
+build_rpm: true
+rebase_distgit: false
