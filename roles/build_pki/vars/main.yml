@@ -1,6 +1,6 @@
 origin_url: https://github.com/cipherboy/pki
-origin_branch: fix-pki-console-requests
-upstream_url: https://github.com/dogtagpki/pki
-upstream_branch: master
+origin_branch: support-f32-f33-upgrade-v10.9
+upstream_url: https://github.com/cipherboy/pki
+upstream_branch: fix-v10.9
 build_rpm: true
 build_version: "10.7"

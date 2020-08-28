@@ -1,0 +1,6 @@
+---
+# Sideloads packages onto a VM
+
+- name: Run dnf install on each item
+  shell: dnf install -y "{{ item }}"
+  loop: "{{ packages }}"

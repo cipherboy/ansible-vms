@@ -4,13 +4,13 @@
 # - replica_finish
 # - master
 # - master_add_replica
-role: master
-hostname: ipa
-address: 192.168.122.231
-master_hostname: ipa
-master_address: 192.168.122.231
-replica_hostname: replica
-replica_address: 192.168.122.129
+role: replica
+hostname: ipa-replica
+address: 192.168.122.189
+master_hostname: ipa-master
+master_address: 192.168.122.189
+replica_hostname: ipa-replica
+replica_address: 192.168.122.242
 domain: cipherdev.io
 realm: CIPHERDEV.IO
 password: Secret.123

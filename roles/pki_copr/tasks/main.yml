@@ -5,16 +5,7 @@
   shell: dnf install -y dnf-plugins-core
 
 - name: Enable the PKI copr repo
-  shell: dnf copr enable -y @pki/master
-  when: (copr_version == "10.7" or copr_version == "master")
-
-- name: Enable the PKI copr repo
-  shell: dnf copr enable -y @pki/10.6
-  when: copr_version == "10.6"
-
-- name: Enable the PKI copr repo
-  shell: dnf copr enable -y @pki/190.5
-  when: copr_version == "10.5"
+  shell: dnf copr enable -y "@pki/{{ copr_version }}"
 
 - name: Refresh repositories
   shell: dnf update --refresh --assumeno || true
