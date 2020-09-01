@@ -1,0 +1,12 @@
+---
+# This playbook provisions a node to build JSS
+
+- name: Load all roles to build JSS
+  hosts: candlepin
+  remote_user: root
+  roles:
+    - dev_env
+    - sideload_packages
+    - build_nss
+    - build_jss
+    - install_jss

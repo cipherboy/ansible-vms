@@ -21,6 +21,10 @@
   shell: nmcli connection modify "{{ ifaddr.stdout }}" +ipv4.ignore-auto-dns yes
   when: role == "client" or role == "replica"
 
+- name: Hard set DNS for devices
+  shell: echo 'DNS1="{{ master_add_replica }}"' >> /etc/sysconfig/network-scripts/ifcfg-enp1s0
+  when: role == "client" or role == "replica"
+
 - name: Set IPA hostname via hostnamectl
   hostname:
     name: "{{ hostname }}.{{ domain }}"

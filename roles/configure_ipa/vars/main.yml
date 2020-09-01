@@ -4,11 +4,11 @@
 # - replica_finish
 # - master
 # - master_add_replica
-role: replica
-hostname: ipa-replica
-address: 192.168.122.189
-master_hostname: ipa-master
-master_address: 192.168.122.189
+role: master
+hostname: ipa
+address: 192.168.122.211
+master_hostname: ipa
+master_address: 192.168.122.211
 replica_hostname: ipa-replica
 replica_address: 192.168.122.242
 domain: cipherdev.io
