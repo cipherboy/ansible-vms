@@ -1,2 +1,2 @@
-pki_version: "10.9"
-pki_source: "build"
+pki_version: "master"
+pki_source: "repo"

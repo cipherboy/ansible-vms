@@ -1,5 +1,5 @@
 origin_url: https://github.com/cipherboy/jss
-origin_branch: disable-fallback-scsv-v4.7
+origin_branch: fix-slots
 upstream_url: https://github.com/dogtagpki/jss
-upstream_branch: v4.7.x
+upstream_branch: master
 build_rpm: true

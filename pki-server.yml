@@ -6,9 +6,7 @@
   remote_user: root
   roles:
     - dev_env
-    - build_jss
-    - install_jss
-    - build_pki
+    - pki_copr
     - install_pki
     - configure_ds
     - configure_ca
