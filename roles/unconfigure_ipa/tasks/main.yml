@@ -1,0 +1,9 @@
+---
+# This role configures the installation of an IPA master
+
+- name: kinit to admin
+  shell: echo "{{ password }}" | kinit "admin@{{ realm|upper }}"
+
+- name: Uninstall IPA Server
+  shell: ipa-server-install --uninstall -U -v
+  when: role == "master"

@@ -22,7 +22,7 @@
   when: role == "client" or role == "replica"
 
 - name: Hard set DNS for devices
-  shell: echo 'DNS1="{{ master_add_replica }}"' >> /etc/sysconfig/network-scripts/ifcfg-enp1s0
+  shell: echo 'DNS1="{{ master_address }}"' >> /etc/sysconfig/network-scripts/ifcfg-enp1s0
   when: role == "client" or role == "replica"
 
 - name: Set IPA hostname via hostnamectl
@@ -34,9 +34,13 @@
   reboot:
   when: role == "master" or role == "client" or role == "replica"
 
-- name: Install IPA Server Master
+- name: Install IPA Server Master with DNS
   shell: ipa-server-install -U -r "{{ realm|upper }}" -n "{{ domain }}" -p "{{ password }}" -a "{{ password }}" "--hostname={{ hostname }}.{{ domain }}" --setup-kra --setup-dns --auto-reverse "--forwarder={{ forwarder }}"
-  when: role == "master"
+  when: role == "master" and with_dns
+
+- name: Install IPA Server Master without DNS
+  shell: ipa-server-install -U -r "{{ realm|upper }}" -n "{{ domain }}" -p "{{ password }}" -a "{{ password }}" "--hostname={{ hostname }}.{{ domain }}" --setup-kra
+  when: role == "master" and not with_dns
 
 - name: Install IPA Client
   shell: ipa-client-install -U "--domain={{ domain }}" "--realm={{ realm|upper }}" "--server={{ master_hostname }}.{{ domain }}" -w "{{ password }}" "--principal=admin@{{ realm|upper }}"

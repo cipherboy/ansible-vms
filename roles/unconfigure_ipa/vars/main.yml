@@ -1,0 +1,9 @@
+## Role choices:
+# - client
+# - replica
+# - replica_finish
+# - master
+# - master_add_replica
+role: master
+realm: CIPHERDEV.IO
+password: Secret.123

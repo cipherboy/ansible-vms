@@ -1,0 +1,8 @@
+---
+# This playbook unprovisions a node as an IPA server
+
+- name: Load all roles
+  hosts: ipa
+  remote_user: root
+  roles:
+     - unconfigure_ipa
