@@ -1,2 +1,5 @@
-pki_version: "master"
+pki_version: "10.6"
 pki_source: "repo"
+with_theme: false
+rhel8: false
+rhel7: true

@@ -36,11 +36,19 @@
 
 - name: Install IPA Server Master with DNS
   shell: ipa-server-install -U -r "{{ realm|upper }}" -n "{{ domain }}" -p "{{ password }}" -a "{{ password }}" "--hostname={{ hostname }}.{{ domain }}" --setup-kra --setup-dns --auto-reverse "--forwarder={{ forwarder }}"
-  when: role == "master" and with_dns
+  when: role == "master" and with_dns and with_kra
 
 - name: Install IPA Server Master without DNS
   shell: ipa-server-install -U -r "{{ realm|upper }}" -n "{{ domain }}" -p "{{ password }}" -a "{{ password }}" "--hostname={{ hostname }}.{{ domain }}" --setup-kra
-  when: role == "master" and not with_dns
+  when: role == "master" and not with_dns and with_kra
+
+- name: Install IPA Server Master with DNS
+  shell: ipa-server-install -U -r "{{ realm|upper }}" -n "{{ domain }}" -p "{{ password }}" -a "{{ password }}" "--hostname={{ hostname }}.{{ domain }}" --setup-dns --auto-reverse "--forwarder={{ forwarder }}"
+  when: role == "master" and with_dns and not with_kra
+
+- name: Install IPA Server Master without DNS
+  shell: ipa-server-install -U -r "{{ realm|upper }}" -n "{{ domain }}" -p "{{ password }}" -a "{{ password }}" "--hostname={{ hostname }}.{{ domain }}"
+  when: role == "master" and not with_dns and not with_kra
 
 - name: Install IPA Client
   shell: ipa-client-install -U "--domain={{ domain }}" "--realm={{ realm|upper }}" "--server={{ master_hostname }}.{{ domain }}" -w "{{ password }}" "--principal=admin@{{ realm|upper }}"

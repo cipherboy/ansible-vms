@@ -1,14 +1,30 @@
 ---
 # This playbook installs dogtag from a built image.
 
+- name: Enable PKI module on RHEL
+  shell: dnf module enable -y pki-core 389-ds pki-deps
+  when: rhel8 == true
+
 - name: Install PKI packages from 10.5 build
-  shell: dnf install /home/pki/sandbox/packages/RPMS/*/*.rpm -y
+  shell: yum install /home/pki/build/pki/RPMS/*.rpm -y
   when: pki_version == "10.5" and pki_source == "build"
 
 - name: Install PKI packages from 10.6 build
   shell: dnf install /home/pki/build/pki/RPMS/*.rpm -y
   when: (pki_version != "10.5") and pki_source == "build"
 
-- name: Install PKI packages from repository
+- name: Install PKI packages from repository (with theme) - dnf
   shell: dnf install -y dogtag-pki pki-base pki-tools
-  when: pki_source == "repo"
+  when: pki_source == "repo" and with_theme and not rhel7
+
+- name: Install PKI packages from repository (no theme) - dnf
+  shell: dnf install -y pki-ca pki-kra pki-base pki-tools
+  when: pki_source == "repo" and not with_theme and not rhel7
+
+- name: Install PKI packages from repository (with theme) - yum
+  shell: yum install -y dogtag-pki pki-base pki-tools
+  when: pki_source == "repo" and with_theme and rhel7
+
+- name: Install PKI packages from repository (no theme) - yum
+  shell: yum install -y pki-ca pki-kra pki-base pki-tools
+  when: pki_source == "repo" and not with_theme and rhel7

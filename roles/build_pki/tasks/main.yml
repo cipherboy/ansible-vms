@@ -76,17 +76,32 @@
   become: yes
   become_user: pki
 
-- name: Remove tomcat-native if it exists
-  command: dnf remove tomcat-native -y
+- name: Remove tomcat-native if it exists via DNF
+  dnf:
+    name: tomcat-native
+    state: absent
+  when: ansible_distribution == 'Fedora' or (ansible_distribution == 'RedHat' and ansible_distribution_major_version == '8')
 
-- name: Install additional PKI dependencies
+- name: Remove tomcat-native if it exists via YUM
+  yum:
+    name: tomcat-native
+    state: absent
+  when: ansible_distribution == 'RedHat' and ansible_distribution_major_version == '7'
+
+- name: Install additional PKI dependencies via DNF
   command: dnf build-dep --spec pki.spec -y
   args:
     chdir: /home/pki/sandbox/pki
-  when: build_version == "10.6" or build_version == "10.7"
+  when: ansible_distribution == 'Fedora' or (ansible_distribution == 'RedHat' and ansible_distribution_major_version == '8')
+
+- name: Install additional PKI dependencies via YUM
+  command: yum-builddep pki.spec -y
+  args:
+    chdir: /home/pki/sandbox/pki
+  when: ansible_distribution == 'RedHat' and ansible_distribution_major_version == '7'
 
 - name: Build RPM for 10.5
-  shell: ./scripts/compose_pki_core_packages rpms
+  shell: ./build.sh rpm
   args:
     chdir: /home/pki/sandbox/pki
   become: yes

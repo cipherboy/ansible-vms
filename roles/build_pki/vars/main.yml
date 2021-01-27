@@ -1,6 +1,6 @@
-origin_url: https://github.com/cipherboy/pki
-origin_branch: add-dual-ipv4-ipv6-ajp-connector
+origin_url: https://github.com/dogtagpki/pki
+origin_branch: DOGTAG_10_6_BRANCH
 upstream_url: https://github.com/dogtagpki/pki
-upstream_branch: master
+upstream_branch: DOGTAG_10_6_BRANCH
 build_rpm: true
-build_version: "10.7"
+build_version: "10.6"

@@ -2,7 +2,7 @@
 # This role configures the installation of a dogtag PKI master
 
 - name: Install 389DS
-  dnf:
+  yum:
     name: "{{ packages }}"
     state: installed
   vars:

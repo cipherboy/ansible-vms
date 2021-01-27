@@ -1,0 +1,11 @@
+---
+# This playbook outputs information about a node.
+
+- name: Load all roles
+  hosts: server
+  remote_user: root
+  tasks:
+    - debug:
+        msg: System {{ inventory_hostname }} has uuid {{ ansible_product_uuid }}
+    - debug:
+        msg: "The operating system is {{ ansible_distribution }} at major version {{ ansible_distribution_major_version }}, complete version {{ ansible_distribution_version }}"
