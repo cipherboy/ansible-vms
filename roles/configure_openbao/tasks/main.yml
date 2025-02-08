@@ -1,0 +1,83 @@
+---
+# This role configures the installation of a dogtag PKI master
+
+- name: Copy OpenBao configuration
+  copy:
+    src: openbao.hcl
+    dest: /etc/openbao/openbao.hcl
+    owner: openbao
+    group: openbao
+    mode: 0644
+  when: with_softhsm == false
+
+- name: Copy OpenBao with SoftHSM configuration
+  copy:
+    src: openbao-softhsm.hcl
+    dest: /etc/openbao/openbao.hcl
+    owner: openbao
+    group: openbao
+    mode: 0644
+  when: with_softhsm == true
+
+- name: Copy SoftHSM configuration
+  copy:
+    src: softhsm2.conf
+    dest: /etc/openbao/softhsm2.conf
+    owner: openbao
+    group: openbao
+    mode: 0644
+  when: with_softhsm == true
+
+- name: Create SoftHSM override directory
+  file:
+    path: /etc/systemd/system/openbao.service.d/
+    state: directory
+  when: with_softhsm == true
+
+- name: Copy SoftHSM OpenBao systemd override
+  copy:
+    src: softhsm-override.conf
+    dest: /etc/systemd/system/openbao.service.d/softhsm-override.conf
+    owner: root
+    group: root
+    mode: 0644
+  when: with_softhsm == true
+
+- name: Install SoftHSM
+  dnf:
+    name:
+      - opensc
+      - softhsm
+    state: latest
+    update_only: false
+  when: with_softhsm == true
+
+- name: Configure SoftHSM
+  shell: |
+    if [ ! -e /opt/openbao/softhsm ]; then
+      mkdir /opt/openbao/softhsm
+
+      export SOFTHSM2_CONF=/etc/openbao/softhsm2.conf
+      export PKCS11SPY=/usr/lib64/pkcs11/libsofthsm2.so
+      export PKCS11SPY_OUTPUT=/opt/openbao/softhsm2.log
+
+      softhsm2-util --init-token --free --label OpenBaoUnsealToken --so-pin 1234 --pin 4321
+      pkcs11-tool --module /usr/lib64/pkcs11/pkcs11-spy.so --token-label OpenBaoUnsealToken --so-pin 1234 --pin 4321 --keygen --key-type aes:32 --label openbao-unseal-key-aes
+
+      chown -R openbao:openbao /opt/openbao/softhsm
+      chown -R openbao:openbao /opt/openbao/softhsm2.log
+    fi
+  when: with_softhsm == true
+
+- name: Add OpenBao to firewall
+  ansible.posix.firewalld:
+    port: 8200/tcp
+    permanent: true
+    immediate: true
+    state: enabled
+
+- name: Start OpenBao
+  systemd_service:
+    name: openbao
+    state: started
+    enabled: true

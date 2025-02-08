@@ -1,0 +1,4 @@
+rpm_url: "https://github.com/openbao/openbao/releases/download/v2.1.1/bao_2.1.1_linux_amd64.rpm"
+from_source: false
+repo: https://github.com/openbao/openbao
+commit: main

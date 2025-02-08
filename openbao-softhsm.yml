@@ -1,0 +1,15 @@
+---
+# This playbook provisions a node with OpenBao.
+
+- name: Load all roles
+  hosts: openbao
+  remote_user: root
+  tasks:
+    - include_role:
+        name: install_openbao
+      vars:
+        rpm_url: https://github.com/openbao/openbao-nightly/releases/download/v9999.9999.9999-n1737917948/bao-hsm_9999.9999.9999-n1737917948_linux_amd64.rpm
+    - include_role:
+        name: configure_openbao
+      vars:
+        with_softhsm: true

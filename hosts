@@ -34,3 +34,6 @@ replica:
 candlepin:
   hosts:
     192.168.122.84
+openbao:
+  hosts:
+    192.168.124.98

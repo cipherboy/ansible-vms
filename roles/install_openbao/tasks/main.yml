@@ -1,0 +1,22 @@
+---
+# This playbook installs OpenBao.
+
+
+- name: Check if OpenBao binary exists
+  stat:
+    path: /bin/bao
+  register: bao
+
+- name: Install OpenBao
+  shell: "dnf install -y {{ rpm_url }}"
+  when:
+    from_source == false and not bao.stat.exists
+
+- name: Install git
+  dnf:
+    name:
+      - git
+      - make
+    state: latest
+    update_only: false
+  when: from_source == true and not bao.stat.exists
